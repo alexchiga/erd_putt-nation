@@ -3,8 +3,8 @@
     <q-page-container>
       <router-view v-slot="{ Component }">
         <transition
-          enter-active-class="animated lightSpeedInLeft"
-          leave-active-class="animated lightSpeedOutRight"
+          enter-active-class="animated lightSpeedInLeft slow"
+          leave-active-class="animated slideOutRight slow"
         >
           <component :is="Component" />
         </transition>

@@ -1,9 +1,15 @@
 <template>
   <div
-    @click="router.push({ path: '/registry/team' })"
+    @click="() => {
+      router.push({ path: '/registry/team' });
+      rotateLogo = true;
+    }"
     class="fullscreen flex flex-center column justify-around"
   >
-    <div class="logo flex flex-center">
+    <div
+      class="logo flex flex-center"
+      :class="{'animated rotateOut slow': rotateLogo}"
+    >
       <q-img
         src="~assets/pn-logo.svg"
         spinner-color="white"
@@ -18,9 +24,11 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const rotateLogo = ref(false);
 </script>
 
 <style scoped lang="sass">
