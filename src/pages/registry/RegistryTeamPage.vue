@@ -1,50 +1,74 @@
 <template>
   <div
-    class="fullscreen flex flex-center column justify-around"
+    class="fullscreen flex flex-center column justify-between q-pa-xl"
   >
     <div class="text-uppercase text-h1 text-weight-bolder text-orange">
       Enter the team name
     </div>
-    <q-card
-      class="input no-border-radius flex flex-center text-blue text-h4 text-weight-bold"
-    >
-      <q-card-section>
-        <div class="team-name">
-          {{ teamName }}
-        </div>
-      </q-card-section>
-    </q-card>
-<!--    <q-input autofocus standout="bg-white" bg-color="white" color="blue" v-model="teamName" label="Standout" />-->
-    <SimpleKeyboard
-      style="color: black"
-      @onChange="onChange"
-      @onKeyPress="onKeyPress"
-      :input="teamName"
-    />
+    <div class="flex flex-center column">
+      <q-card
+        class="input no-border-radius flex flex-center text-blue text-h4 text-weight-bold q-mb-lg"
+      >
+        <q-card-section>
+          <div class="carriage">
+            {{ teamName }}
+          </div>
+        </q-card-section>
+      </q-card>
+      <SimpleKeyboard
+        style="color: black"
+        @onChange="onChange"
+        :input="teamName"
+        :maxLength="15"
+      />
+    </div>
+    <div class="full-width flex justify-between">
+      <q-btn
+        to="/registry"
+        class="text-weight-bolder"
+        push
+        color="orange"
+        icon="fas fa-chevron-left"
+        size="xl"
+        label="back"
+      />
+      <q-btn
+        to="/registry/players"
+        class="text-weight-bolder"
+        push
+        color="orange"
+        icon-right="fas fa-check"
+        size="xl"
+        label="confirm"
+        :disable="teamName.length < 3"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useRegistryStore } from 'stores/registry-store';
 import SimpleKeyboard from '../../components/SimpleKeyboard.vue';
 
-const teamName = ref('');
+const registryStore = useRegistryStore();
+const { teamName } = storeToRefs(registryStore);
 const onChange = (input: string) => {
   teamName.value = input;
 };
-const onKeyPress = (button: string) => {
-  console.log("button", button);
-};
-const onInputChange = (input: any) => {
-  teamName.value = input.target.value;
-};
+// const onKeyPress = (button: string) => {
+//   console.log("button", button);
+// };
+// const onInputChange = (input: any) => {
+//   teamName.value = input.target.value;
+// };
 </script>
 
 <style scoped lang="sass">
 .input
   width: 400px
   height: 75px
-.team-name
+.carriage
   height: 40px
   animation: blink 1s infinite
   border-right-style: solid

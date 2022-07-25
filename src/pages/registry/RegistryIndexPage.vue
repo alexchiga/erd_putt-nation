@@ -42,4 +42,14 @@ const rotateLogo = ref(false);
   background-image: radial-gradient(rgba(2, 50, 74, 0.05) 2.5vh, transparent 2.5vh), radial-gradient(rgba(2, 50, 74, 0.05) 2.5vh, transparent 2.5vh)
   background-size: 10vh 10vh
   background-position: 0 0, 5vh 5vh
+
+@keyframes rotateOut
+ from
+  opacity: 1
+ to
+  transform: rotate3d(0, 0, 1, -200deg)
+
+.rotateOut
+  animation-name: rotateOut
+  transform-origin: center
 </style>

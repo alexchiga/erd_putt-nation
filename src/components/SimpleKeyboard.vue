@@ -16,6 +16,10 @@ export default {
     input: {
       type: String,
     },
+    maxLength: {
+      default: 100,
+      type: Number,
+    },
   },
   data: () => ({
     keyboard: null,
@@ -24,6 +28,7 @@ export default {
     this.keyboard = new Keyboard(this.keyboardClass, {
       onChange: this.onChange,
       onKeyPress: this.onKeyPress,
+      maxLength: this.maxLength,
       layout: {
         default: [
           '1 2 3 4 5 6 7 8 9 0',
@@ -41,10 +46,12 @@ export default {
         '{space}': ' ',
       },
     });
+    this.keyboard.setInput(this.input);
   },
   methods: {
     onChange(input) {
       this.$emit('onChange', input);
+      this.keyboard.setInput(input);
     },
     onKeyPress(button) {
       this.$emit('onKeyPress', button);
