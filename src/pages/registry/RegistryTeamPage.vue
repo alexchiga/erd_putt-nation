@@ -22,24 +22,24 @@
         :maxLength="15"
       />
     </div>
-    <div class="full-width flex justify-between">
-      <q-btn
-        to="/registry"
-        class="text-weight-bolder"
-        push
-        color="orange"
-        icon="fas fa-chevron-left"
-        size="xl"
-        label="back"
-      />
+    <div class="full-width flex justify-end">
+<!--      <q-btn-->
+<!--        to="/registry"-->
+<!--        class="text-weight-bolder"-->
+<!--        push-->
+<!--        color="orange"-->
+<!--        icon="fas fa-chevron-left"-->
+<!--        size="xl"-->
+<!--        label="back"-->
+<!--      />-->
       <q-btn
         to="/registry/players"
         class="text-weight-bolder"
         push
         color="orange"
-        icon-right="fas fa-check"
+        icon-right="fas fa-chevron-right"
         size="xl"
-        label="confirm"
+        label="next"
         :disable="teamName.length < 3"
       />
     </div>
