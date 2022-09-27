@@ -84,6 +84,7 @@
             </div>
             <div class="flex flex-center column">
               <q-card
+                :class="{'bg-red-4': playerNameUsed}"
                 class="input no-border-radius flex flex-center text-blue text-h4 text-weight-bold q-mb-lg"
               >
                 <q-card-section>
@@ -112,7 +113,6 @@
               />
               <q-btn
                 @click="addPlayer"
-                to="/registry/players"
                 class="text-weight-bolder"
                 push
                 outline
@@ -120,7 +120,7 @@
                 icon-right="fas fa-plus"
                 size="xl"
                 label="add"
-                :disable="playerName.length < 2"
+                :disable="playerName.length < 2 || playerNameUsed"
               />
             </div>
           </div>
@@ -145,6 +145,7 @@
             </div>
             <div class="flex flex-center column">
               <q-card
+                :class="{'bg-red-4': playerNameUsed}"
                 class="input no-border-radius flex flex-center text-blue text-h4 text-weight-bold q-mb-lg"
               >
                 <q-card-section>
@@ -173,7 +174,6 @@
               />
               <q-btn
                 @click="savePlayer"
-                to="/registry/players"
                 class="text-weight-bolder"
                 push
                 outline
@@ -181,7 +181,7 @@
                 icon-right="fas fa-floppy-disk"
                 size="xl"
                 label="save"
-                :disable="playerName.length < 2"
+                :disable="playerName.length < 2 || playerNameUsed"
               />
             </div>
           </div>
@@ -192,7 +192,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRegistryStore } from 'stores/registry-store';
 import SimpleKeyboard from '../../components/SimpleKeyboard.vue';
@@ -212,6 +212,7 @@ const closeAddDialog = () => {
 const addPlayer = () => {
   players.value.push({
     name: playerName.value,
+    score: 0,
   });
   closeAddDialog();
 };
@@ -235,12 +236,21 @@ const savePlayer = () => {
   players.value[playerIndex].name = playerName.value;
   closeEditDialog();
 };
+
+const playerNameUsed = computed(() => {
+  if (editDialog.value) {
+    return players.value.filter((item) => item.name === playerName.value).length > 0
+      && players.value[playerIndex].name !== playerName.value;
+  }
+  return players.value.filter((item) => item.name === playerName.value).length > 0;
+});
 </script>
 
 <style scoped lang="sass">
 .input
   width: 400px
   height: 75px
+  transition: background-color .3s
 .carriage
   height: 40px
   animation: blink 1s infinite

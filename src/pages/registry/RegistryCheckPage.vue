@@ -45,9 +45,10 @@
         icon="fas fa-chevron-left"
         size="xl"
         label="back"
+        :disable="loading"
       />
       <q-btn
-        to="/registry/finish"
+        @click="confirm"
         class="text-weight-bolder"
         push
         color="orange"
@@ -55,18 +56,29 @@
         size="xl"
         label="confirm"
         :disable="teamName.length < 3"
+        :loading="loading"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRegistryStore } from 'stores/registry-store';
+import { useRouter } from 'vue-router';
 
 const registryStore = useRegistryStore();
 const { teamName } = storeToRefs(registryStore);
 const { players } = storeToRefs(registryStore);
+
+const router = useRouter();
+const loading = ref(false);
+const confirm = async () => {
+  loading.value = true;
+  await registryStore.postTeam();
+  router.push({ path: '/registry/finish' });
+};
 
 </script>
 
