@@ -212,7 +212,7 @@ const closeAddDialog = () => {
 const addPlayer = () => {
   players.value.push({
     name: playerName.value,
-    score: 0,
+    scores: 0,
   });
   closeAddDialog();
 };
