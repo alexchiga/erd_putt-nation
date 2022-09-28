@@ -8,6 +8,7 @@ type IState = {
     scores: number
   }>,
   teams: Array<string>,
+  pin: string,
 };
 
 export const useRegistryStore = defineStore('registryStore', {
@@ -15,6 +16,7 @@ export const useRegistryStore = defineStore('registryStore', {
     teamName: '',
     players: [],
     teams: [],
+    pin: '',
   } as IState),
   actions: {
     async fetchTeamList() {
@@ -32,8 +34,7 @@ export const useRegistryStore = defineStore('registryStore', {
           name: this.teamName,
           players: this.players,
         });
-        // eslint-disable-next-line no-console
-        console.log(data);
+        this.pin = data.pin;
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e);

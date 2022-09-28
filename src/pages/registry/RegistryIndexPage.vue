@@ -26,9 +26,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useRegistryStore } from 'stores/registry-store';
 
 const router = useRouter();
 const rotateLogo = ref(false);
+
+const registryStore = useRegistryStore();
+registryStore.$reset();
 </script>
 
 <style scoped lang="sass">

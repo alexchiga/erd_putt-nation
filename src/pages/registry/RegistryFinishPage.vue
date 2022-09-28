@@ -7,11 +7,11 @@
         Registration completed!
       </p>
       <p>
-        Remember this passcode, you will need it to access the game:
+        Remember this passcode or take a picture with your phone, you will need it to access the game:
       </p>
     </div>
     <div class="text-h1 text-weight-bolder text-orange q-ma-xl">
-      123
+      {{ pin }}
     </div>
     <div class="full-width flex justify-center">
       <q-btn
@@ -30,8 +30,7 @@ import { storeToRefs } from 'pinia';
 import { useRegistryStore } from 'stores/registry-store';
 
 const registryStore = useRegistryStore();
-const { teamName } = storeToRefs(registryStore);
-const { players } = storeToRefs(registryStore);
+const { pin } = storeToRefs(registryStore);
 
 </script>
 
