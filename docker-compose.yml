@@ -1,0 +1,16 @@
+version: "3" 
+
+services:
+  golf_frontend:
+    build:
+      context: .
+      dockerfile: ./.image/Dockerfile
+    container_name: "golf_frontend"
+    restart: always
+    environment:
+      JSFOLDER: "/usr/share/nginx/html/*/*.jsjs"
+    
+networks:
+  default:
+    name: proxy
+    external: true
