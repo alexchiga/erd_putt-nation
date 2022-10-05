@@ -12,6 +12,13 @@ const routes: RouteRecordRaw[] = [
       { path: 'finish', component: () => import('pages/registry/RegistryFinishPage.vue') },
     ],
   },
+  {
+    path: '/rating',
+    component: () => import('layouts/RatingLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/rating/RatingIndexPage.vue') },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
