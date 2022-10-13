@@ -19,6 +19,15 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/rating/RatingIndexPage.vue') },
     ],
   },
+  {
+    path: '/hole/:hole',
+    component: () => import('layouts/HoleLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/hole/HoleIndexPage.vue') },
+      { path: 'login', component: () => import('pages/hole/HoleLoginPage.vue') },
+      { path: 'score', component: () => import('pages/hole/HoleScorePage.vue') },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
