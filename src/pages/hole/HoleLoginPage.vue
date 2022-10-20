@@ -86,7 +86,7 @@ const login = async () => {
 .carriage
   height: 50px
   animation: blink 1s infinite
-  border-right-width: 4px
+  border-right-width: 5px
   border-right-style: solid
   white-space: pre
 @keyframes blink

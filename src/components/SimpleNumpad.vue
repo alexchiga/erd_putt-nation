@@ -20,6 +20,14 @@ export default {
       default: 100,
       type: Number,
     },
+    layoutName: {
+      default: 'default',
+      type: String,
+    },
+    shift: {
+      default: false,
+      type: Boolean,
+    },
   },
   data: () => ({
     keyboard: null,
@@ -36,13 +44,21 @@ export default {
           '7 8 9',
           '0 {bksp}',
         ],
+        minus: [
+          '1 2 3',
+          '4 5 6',
+          '7 8 9',
+          '{lock} 0 {bksp}',
+        ],
       },
+      layoutName: this.layoutName,
       display: {
         '{shift}': '⇧',
         '{shiftactivated}': '⇧',
         '{enter}': '↵',
         '{bksp}': '⌫',
         '{space}': ' ',
+        '{lock}': '-',
       },
     });
     this.keyboard.setInput(this.input);
@@ -58,7 +74,8 @@ export default {
       /**
        * If you want to handle the shift and caps lock buttons
        */
-      if (button === '{shift}' || button === '{lock}') this.handleShift();
+      if (button === '{shift}' || button === '{lock}') this.$emit('shift', !this.shift);
+      if (button === '{bksp}' && this.input === '') this.$emit('shift', false);
     },
     handleShift() {
       const currentLayout = this.keyboard.options.layoutName;
