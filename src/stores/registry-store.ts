@@ -5,7 +5,11 @@ type IState = {
   teamName: string,
   players: Array<{
     name: string,
-    scores: number
+    scores: number,
+    holes: Array<{
+      id: string,
+      scores: number | null,
+    }>,
   }>,
   teams: Array<string>,
   pin: string,

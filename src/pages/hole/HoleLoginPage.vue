@@ -62,7 +62,7 @@ const router = useRouter();
 const loading = ref(false);
 const login = async () => {
   loading.value = true;
-  const success = await holeStore.fetchTeam(pin.value);
+  const success = await holeStore.fetchTeam(pin.value, holeNumber.value);
   if (success) {
     router.push({ path: `/hole/${holeNumber.value}/score` });
   } else {

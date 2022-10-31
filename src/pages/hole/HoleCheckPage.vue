@@ -28,10 +28,11 @@
           </q-tr>
           <q-tr :props="props">
             <q-th
-              v-for="col in props.cols"
+              v-for="(col, index) in props.cols"
               :key="col.name"
               :props="props"
-              :class="{'current-hole-background': holeNumber === col.label}"
+              @click="selectColumn(props, index)"
+              :class="{'current-hole-background': selectedColumn !== 0 && selectedColumn === index}"
             >
               <span
                 class="text-h3 text-uppercase text-weight-bolder"
@@ -47,10 +48,11 @@
             :props="props"
           >
             <q-td
-              v-for="col in props.cols"
+              v-for="(col, index) in props.cols"
               :key="col.name"
               :props="props"
-              :class="{'current-hole-background': `hole${holeNumber}` === col.name}"
+              @click="selectRow(props, index)"
+              :class="{'current-hole-background': selectedColumn !== 0 && selectedColumn === index}"
             >
               <span class="text-h3 text-uppercase text-weight-bold">
                 <template v-if="col.value !== null">
@@ -64,7 +66,7 @@
           </q-tr>
         </template>
       </q-table>
-      <div>
+      <div v-if="selected.length">
         <div class="text-h3 q-mb-lg text-uppercase text-weight-bolder text-center">
           {{ selected[0].name }}:
         </div>
@@ -84,7 +86,7 @@
               style="position: absolute; transform: translateX(157px)"
             >
               <q-btn
-                @click="addScore"
+                @click="editScore"
                 class="text-weight-bolder"
                 push
                 color="orange"
@@ -100,7 +102,7 @@
             style="color: black"
             :input="score"
             :maxLength="2"
-            keyboard-class="numpad_score"
+            keyboard-class="numpad_check"
             layoutName="minus"
             @shift="minus = $event"
             :shift="minus"
@@ -108,37 +110,18 @@
         </div>
       </div>
     </div>
-    <div class="full-width flex justify-start">
+    <div class="full-width flex justify-end">
       <q-btn
-        :to="`/hole/${holeNumber}`"
+        @click="confirm"
         class="text-weight-bolder"
         push
         color="orange"
-        icon="fas fa-door-closed"
+        icon-right="fas fa-check"
         size="xl"
-        label="exit"
+        label="confirm"
+        :loading="loading"
       />
-<!--      <q-btn-->
-<!--        :to="`/hole/${holeNumber}`"-->
-<!--        class="text-weight-bolder"-->
-<!--        push-->
-<!--        color="orange"-->
-<!--        icon-right="fas fa-check"-->
-<!--        size="xl"-->
-<!--        label="confirm"-->
-<!--      />-->
     </div>
-    <q-dialog
-      v-model="video"
-      persistent
-      :maximized="true"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-    >
-      <q-card class="bg-primary text-white text-uppercase text-h1 flex flex-center text-weight-bold">
-        Here will be video.
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -173,6 +156,8 @@ type IColumn = {
 const columns = ref<Array<IColumn>>([]);
 const rows = ref<Array<IRow>>([]);
 const selected = ref<Array<IRow>>([]);
+const selectedColumn = ref(0);
+const selectedHole = ref('');
 let currentPlayer = 0;
 onBeforeMount(() => {
   columns.value.push({
@@ -211,7 +196,7 @@ onBeforeMount(() => {
       score: player.scores,
     });
   });
-  selected.value.push(rows.value[currentPlayer]);
+  // selected.value.push(rows.value[currentPlayer]);
 });
 
 const score = ref('');
@@ -221,25 +206,58 @@ const onChange = (input: string) => {
   score.value = input;
 };
 
-const addScore = () => {
+const editScore = () => {
   const scores: number | null = Number(`${minus.value ? '-' : ''}${score.value}`);
-  selected.value[0][`hole${holeNumber.value}`] = scores;
-  team.value.players[currentPlayer].holes[team.value.players[currentPlayer].holes.length - 1].scores = scores;
-  team.value.players[currentPlayer].scores += scores;
-  selected.value[0].score = team.value.players[currentPlayer].scores;
-  video.value = true;
-  setTimeout(() => {
-    // eslint-disable-next-line no-plusplus
-    if (team.value.players.length - 1 > currentPlayer) currentPlayer += 1;
-    else {
-      // holeStore.postResults();
-      router.push(`/hole/${holeNumber.value}/check`);
-    }
-    selected.value[0] = rows.value[currentPlayer];
-    score.value = '';
-    minus.value = false;
-    video.value = false;
-  }, 1500);
+  selected.value[0][selectedHole.value] = scores;
+  team.value.players[currentPlayer].holes[selectedColumn.value - 1].scores = scores;
+  let totalScore = 0;
+  team.value.players[currentPlayer].holes.forEach((item) => {
+    totalScore += item.scores ? item.scores : 0;
+  });
+  team.value.players[currentPlayer].scores = totalScore;
+  selected.value[0].score = totalScore;
+};
+
+const selectColumn = (props: any, index: number) => {
+  if (selected.value.length === 0) {
+    selected.value.push(rows.value[0]);
+  }
+  if (index !== 0 && index !== props.cols.length - 1) {
+    // props.selected = true;
+    selectedColumn.value = index;
+    minus.value = selected.value[0][props.cols[index].name] < 0;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    score.value = String(Math.abs(selected.value[0][props.cols[index].name]));
+  }
+  selectedHole.value = props.cols[selectedColumn.value].name;
+};
+
+const selectRow = (props: any, index: number) => {
+  props.selected = true;
+  if (selectedColumn.value === 0) {
+    selectedColumn.value = 1;
+    score.value = String(Math.abs(props.cols[selectedColumn.value].value));
+  }
+  if (index !== 0 && index !== props.cols.length - 1) {
+    selectedColumn.value = index;
+    currentPlayer = props.rowIndex;
+    minus.value = props.cols[index].value < 0;
+    score.value = String(Math.abs(props.cols[index].value));
+  } else {
+    minus.value = selected.value[0][props.cols[selectedColumn.value].name] < 0;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    score.value = String(Math.abs(selected.value[0][props.cols[selectedColumn.value].name]));
+  }
+  selectedHole.value = props.cols[selectedColumn.value].name;
+};
+
+const loading = ref(false);
+const confirm = () => {
+  loading.value = true;
+  holeStore.postResults();
+  router.push(`/hole/${holeNumber.value}`);
 };
 </script>
 

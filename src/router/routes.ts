@@ -26,6 +26,7 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/hole/HoleIndexPage.vue') },
       { path: 'login', component: () => import('pages/hole/HoleLoginPage.vue') },
       { path: 'score', component: () => import('pages/hole/HoleScorePage.vue') },
+      { path: 'check', component: () => import('pages/hole/HoleCheckPage.vue') },
     ],
   },
 

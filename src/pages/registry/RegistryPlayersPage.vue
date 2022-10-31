@@ -213,6 +213,7 @@ const addPlayer = () => {
   players.value.push({
     name: playerName.value,
     scores: 0,
+    holes: [],
   });
   closeAddDialog();
 };
