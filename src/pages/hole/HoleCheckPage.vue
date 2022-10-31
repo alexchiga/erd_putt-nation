@@ -2,7 +2,9 @@
   <div
     class="full-height flex flex-center column justify-between q-pa-xl"
   >
-    <div></div>
+    <div class="text-h4 text-uppercase text-weight-bolder text-orange">
+      Check and correct your results if necessary
+    </div>
     <div class="flex row flex-center full-width justify-around">
       <q-table
         v-model:selected="selected"
@@ -66,17 +68,20 @@
           </q-tr>
         </template>
       </q-table>
-      <div v-if="selected.length">
-        <div class="text-h3 q-mb-lg text-uppercase text-weight-bolder text-center">
+      <div>
+        <div class="text-h3 q-mb-lg text-uppercase text-weight-bolder text-center" v-if="selected.length">
+          hole #{{ selectedHole }},
+          <br>
           {{ selected[0].name }}:
         </div>
+        <div v-else style="height: 124px"/>
         <div class="flex flex-center column full-width justify-around" style="width: 400px">
           <div class="flex flex-center  q-mb-lg">
             <q-card
               class="input no-border-radius flex flex-center text-blue text-h3 text-weight-bold"
             >
               <q-card-section>
-                <div class="carriage">
+                <div :class="{'carriage': selected.length}">
                   <span style="position: absolute; transform: translateX(-10px)" v-if="minus">-</span>
                   {{ score }}
                 </div>
@@ -104,7 +109,9 @@
             :maxLength="2"
             keyboard-class="numpad_check"
             layoutName="minus"
-            @shift="minus = $event"
+            @shift="(event) => {
+              if (selected.length) minus = event;
+            }"
             :shift="minus"
           />
         </div>
@@ -203,12 +210,14 @@ const score = ref('');
 const minus = ref(false);
 
 const onChange = (input: string) => {
-  score.value = input;
+  if (selected.value.length) {
+    score.value = input;
+  }
 };
 
 const editScore = () => {
   const scores: number | null = Number(`${minus.value ? '-' : ''}${score.value}`);
-  selected.value[0][selectedHole.value] = scores;
+  selected.value[0][`hole${selectedHole.value}`] = scores;
   team.value.players[currentPlayer].holes[selectedColumn.value - 1].scores = scores;
   let totalScore = 0;
   team.value.players[currentPlayer].holes.forEach((item) => {
@@ -230,7 +239,7 @@ const selectColumn = (props: any, index: number) => {
     // @ts-ignore
     score.value = String(Math.abs(selected.value[0][props.cols[index].name]));
   }
-  selectedHole.value = props.cols[selectedColumn.value].name;
+  selectedHole.value = props.cols[selectedColumn.value].label;
 };
 
 const selectRow = (props: any, index: number) => {
@@ -250,7 +259,7 @@ const selectRow = (props: any, index: number) => {
     // @ts-ignore
     score.value = String(Math.abs(selected.value[0][props.cols[selectedColumn.value].name]));
   }
-  selectedHole.value = props.cols[selectedColumn.value].name;
+  selectedHole.value = props.cols[selectedColumn.value].label;
 };
 
 const loading = ref(false);
