@@ -2,12 +2,15 @@
   <div
     class="full-height flex flex-center column justify-between q-pa-xl"
   >
-    <div></div>
+    <div class="text-h4 text-uppercase text-weight-bolder text-orange">
+      Enter your current results. If you don't want to go in order, then select the required player
+    </div>
     <div class="flex row flex-center full-width justify-around">
       <q-table
         v-model:selected="selected"
         :rows="rows"
         :columns="columns"
+        :pagination="{ page: 1, rowsPerPage: 0 }"
         row-key="name"
         separator="vertical"
         dark
@@ -18,13 +21,30 @@
       >
         <template v-slot:header="props">
           <q-tr>
-            <q-th/>
+            <q-th
+              class="text-left"
+            >
+              <div
+                style="transform: translateY(50%)"
+                class="text-h3 text-uppercase text-weight-bolder"
+              >
+                Players
+              </div>
+            </q-th>
             <q-th :colspan="columns.length - 2">
-              <span class="text-h3 text-uppercase text-weight-bolder">
-                hole #
+              <span
+                class="text-h3 text-uppercase text-weight-bolder"
+              >
+                Hole #
               </span>
             </q-th>
-            <q-th/>
+            <q-th class="text-right">
+              <div
+                class="text-h3 text-uppercase text-weight-bolder"
+              >
+                Total
+              </div>
+            </q-th>
           </q-tr>
           <q-tr :props="props">
             <q-th
@@ -50,6 +70,7 @@
               v-for="col in props.cols"
               :key="col.name"
               :props="props"
+              @click="selectRow(props)"
               :class="{'current-hole-background': `hole${holeNumber}` === col.name}"
             >
               <span class="text-h3 text-uppercase text-weight-bold">
@@ -178,10 +199,10 @@ onBeforeMount(() => {
   columns.value.push({
     name: 'name',
     required: true,
-    label: 'Players',
+    label: '',
     field: 'name',
     align: 'left',
-    style: 'width: 350px',
+    style: 'width: 270px',
   });
   team.value.players[0].holes.forEach((hole) => {
     columns.value.push({
@@ -196,9 +217,10 @@ onBeforeMount(() => {
   columns.value.push({
     name: 'score',
     required: true,
-    label: 'Total score',
+    label: 'score',
     field: 'score',
     align: 'right',
+    style: 'width: 230px',
   });
   team.value.players.forEach((player) => {
     const holes: { [k: string]: number | null } = {};
@@ -229,17 +251,42 @@ const addScore = () => {
   selected.value[0].score = team.value.players[currentPlayer].scores;
   video.value = true;
   setTimeout(() => {
-    // eslint-disable-next-line no-plusplus
-    if (team.value.players.length - 1 > currentPlayer) currentPlayer += 1;
-    else {
+    if (currentPlayer + 1 > rows.value.length) currentPlayer += 1;
+    else currentPlayer = 0;
+    const nextIndex = rows.value.findIndex(
+      (item, index) => index >= currentPlayer && item[`hole${holeNumber.value}`] == null,
+    );
+    if (nextIndex >= 0) {
+      currentPlayer = nextIndex;
+      selected.value[0] = rows.value[currentPlayer];
+      score.value = '';
+      minus.value = false;
+    } else {
       // holeStore.postResults();
       router.push(`/hole/${holeNumber.value}/check`);
     }
-    selected.value[0] = rows.value[currentPlayer];
-    score.value = '';
-    minus.value = false;
     video.value = false;
   }, 1500);
+};
+
+const selectRow = (props: any) => {
+  // if (selectedColumn.value === 0) {
+  //   selectedColumn.value = 1;
+  //   score.value = String(Math.abs(props.cols[selectedColumn.value].value));
+  // }
+  if (rows.value[props.rowIndex][`hole${holeNumber.value}`] == null && currentPlayer !== props.rowIndex) {
+    props.selected = true;
+    currentPlayer = props.rowIndex;
+    score.value = '';
+    minus.value = false;
+  }
+  // else {
+  //   minus.value = selected.value[0][props.cols[selectedColumn.value].name] < 0;
+  //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //   // @ts-ignore
+  //   score.value = String(Math.abs(selected.value[0][props.cols[selectedColumn.value].name]));
+  // }
+  // selectedHole.value = props.cols[selectedColumn.value].label;
 };
 </script>
 

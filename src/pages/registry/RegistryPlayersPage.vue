@@ -35,7 +35,7 @@
         </q-item>
       </q-list>
       <q-btn
-        v-if="players.length < 5"
+        v-if="players.length < 8"
         @click="addDialog = true"
         class="text-weight-bold q-mt-lg"
         size="xl"

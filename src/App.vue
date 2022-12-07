@@ -10,7 +10,7 @@ onBeforeMount(() => {
     .querySelector('meta[name=viewport]')
     ?.setAttribute(
       'content',
-      `user-scalable=no,initial-scale=${1 / window.devicePixelRatio}, maximum-scale=${1 / window.devicePixelRatio}, minimum-scale=${1 / window.devicePixelRatio}, width=device-width`,
+      `user-scalable=no,initial-scale=${1.5 / window.devicePixelRatio}, maximum-scale=${1 / window.devicePixelRatio}, minimum-scale=${1 / window.devicePixelRatio}, width=device-width`,
     );
 });
 </script>

@@ -10,6 +10,7 @@
         v-model:selected="selected"
         :rows="rows"
         :columns="columns"
+        :pagination="{ page: 1, rowsPerPage: 0 }"
         row-key="name"
         separator="vertical"
         dark
@@ -20,13 +21,28 @@
       >
         <template v-slot:header="props">
           <q-tr>
-            <q-th/>
+            <q-th
+              class="text-left"
+            >
+              <div
+                style="transform: translateY(50%)"
+                class="text-h3 text-uppercase text-weight-bolder"
+              >
+                Players
+              </div>
+            </q-th>
             <q-th :colspan="columns.length - 2">
               <span class="text-h3 text-uppercase text-weight-bolder">
                 hole #
               </span>
             </q-th>
-            <q-th/>
+            <q-th class="text-right">
+              <div
+                class="text-h3 text-uppercase text-weight-bolder"
+              >
+                Total
+              </div>
+            </q-th>
           </q-tr>
           <q-tr :props="props">
             <q-th
@@ -170,10 +186,10 @@ onBeforeMount(() => {
   columns.value.push({
     name: 'name',
     required: true,
-    label: 'Players',
+    label: '',
     field: 'name',
     align: 'left',
-    style: 'width: 350px',
+    style: 'width: 270px',
   });
   team.value.players[0].holes.forEach((hole) => {
     columns.value.push({
@@ -188,9 +204,10 @@ onBeforeMount(() => {
   columns.value.push({
     name: 'score',
     required: true,
-    label: 'Total score',
+    label: 'score',
     field: 'score',
     align: 'right',
+    style: 'width: 230px',
   });
   team.value.players.forEach((player) => {
     const holes: { [k: string]: number | null } = {};
@@ -266,7 +283,11 @@ const loading = ref(false);
 const confirm = () => {
   loading.value = true;
   holeStore.postResults();
-  router.push(`/hole/${holeNumber.value}`);
+  if (team.value.players[0].holes.length >= 9) {
+    router.push(`/hole/${holeNumber.value}/finish`);
+  } else {
+    router.push(`/hole/${holeNumber.value}`);
+  }
 };
 </script>
 
