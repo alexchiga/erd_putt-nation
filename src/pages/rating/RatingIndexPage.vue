@@ -134,11 +134,12 @@ const container = ref(null);
 onMounted(() => {
   if (container.value) {
     const scrollTarget = getScrollTarget(container.value);
-    const scrollHeight = getScrollHeight(container.value);
-    const scrollDuration = 10000;
+    let scrollHeight = getScrollHeight(container.value);
+    const scrollDuration = 20000;
 
     setTimeout(() => {
       if (container.value) {
+        scrollHeight = getScrollHeight(container.value);
         setVerticalScrollPosition(scrollTarget, scrollHeight, scrollDuration);
       }
     }, 2000);
@@ -159,7 +160,7 @@ onMounted(() => {
           }
         }, 2000);
       }
-    }, 14000);
+    }, 22500);
 
     onUnmounted(() => {
       clearInterval(intervalId);
