@@ -1,4 +1,4 @@
-version: "3" 
+version: "3"
 
 services:
   golf_frontend:
@@ -8,8 +8,9 @@ services:
     container_name: "golf_frontend"
     restart: always
     environment:
-      JSFOLDER: "/usr/share/nginx/html/*/*.jsjs"
-    
+      JSFOLDER: "/usr/share/nginx/html/*/*.js"
+      VITE_ROOM_NAME: "Pub"
+
 networks:
   default:
     name: proxy

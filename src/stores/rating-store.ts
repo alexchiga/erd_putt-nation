@@ -2,33 +2,50 @@ import { defineStore } from 'pinia';
 import { api } from 'boot/axios';
 
 type IState = {
-  day: Array<{
-    name: string,
-    scores: number,
-  }>,
-  month: Array<{
-    name: string,
-    scores: number,
-  }>,
-  year: Array<{
-    name: string,
-    scores: number,
-  }>,
+  players: {
+    day: Array<{
+      team: string,
+      player: string,
+      scores: number,
+    }>,
+    week: Array<{
+      team: string,
+      player: string,
+      scores: number,
+    }>,
+  },
+  teams: {
+    day: Array<{
+      team: string,
+      scores: number,
+    }>,
+    week: Array<{
+      team: string,
+      scores: number,
+    }>,
+  },
 };
 
 export const useRatingStore = defineStore('ratingStore', {
   state: () => ({
-    day: [],
-    month: [],
-    year: [],
+    players: {
+      day: [],
+      week: [],
+    },
+    teams: {
+      day: [],
+      week: [],
+    },
   } as IState),
   actions: {
     async fetchLeaderboard() {
       try {
-        const { data } = await api.get('/leaderboard');
-        this.day = data.day;
-        this.month = data.month;
-        this.year = data.year;
+        const { data: dataTeams } = await api.get('/leaderboard?type=team');
+        const { data: dataPlayers } = await api.get('/leaderboard?type=player');
+        this.teams.day = dataTeams.day.slice(0, 25);
+        this.teams.week = dataTeams.week.slice(0, 25);
+        this.players.day = dataPlayers.day.slice(0, 25);
+        this.players.week = dataPlayers.week.slice(0, 25);
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e);
